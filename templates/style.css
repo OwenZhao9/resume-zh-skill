@@ -1,0 +1,78 @@
+@page { size: A4; margin: 10mm 11mm 8mm; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font: 9.4pt/1.40 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
+  color:#000; background:#fff; max-width:188mm; margin:0 auto;
+  -webkit-font-smoothing: antialiased;
+}
+a { color:#000; text-decoration:none; }
+/* 正文里的内联链接：加下划线，让人看得出可点 */
+a.ilink { border-bottom:0.5px solid #888; }
+strong { font-weight:700; }
+em { font-style:italic; }
+
+/* 抬头：大号无衬线姓名，仿 LaTeX 的 \MyName（Helvetica） */
+header { margin-bottom:7px; display:flex; align-items:flex-start; gap:14px; }
+.hd-l { flex:1 1 auto; min-width:0; }
+/* 证件照：无边框、无圆角、无滤镜，保持原色 */
+.photo { flex:0 0 auto; width:17mm; height:auto; display:block; margin-top:1px; }
+h1 { font:600 23pt/1.1 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
+     letter-spacing:2px; display:inline-block; }
+.title { font:500 11.5pt/1 "Helvetica Neue", "PingFang SC", sans-serif; margin-left:14px; color:#333; }
+/* 六列网格：标签 | 冒号 | 值，两组。
+   标签用两端对齐（text-align-last:justify）撑满固定宽度，
+   于是左边缘和冒号同时对齐——中文简历里「电 话 / 个人主页」那种排法。 */
+.contact { margin-top:6px; font-size:9.3pt;
+           display:grid; grid-template-columns:auto auto 1fr auto auto 1fr;
+           row-gap:2px; column-gap:0; align-items:baseline; }
+.contact .lb, .contact .lb2 { font-weight:700; display:inline-block;
+           text-align:justify; text-align-last:justify; }
+.contact .lb  { width:4.6em; }      /* 电话 / 个人主页 */
+.contact .lb2 { width:3.32em; }   /* 刚好等于 GitHub 的自然宽度 */
+.contact .lb2.en { text-align-last:left; }   /* 拉丁字母不做两端对齐，否则字距被撑开 */      /* 邮箱 / GitHub */
+.contact .cl { font-weight:700; padding-right:2px; }
+.contact .vl { padding-right:20px; }
+
+/* 区块标题：仿 LaTeX titlesec 的粗体 + 下划线 */
+h2 { font:700 11.5pt/1.25 "Helvetica Neue", "PingFang SC", sans-serif; letter-spacing:1px;
+     margin:6px 0 2px; padding-bottom:1px; border-bottom:1px solid #000;
+     break-after:avoid; }
+h2 .sub { font:400 9.3pt "Helvetica Neue", "PingFang SC", sans-serif; color:#444; margin-left:6px; letter-spacing:0; }
+
+/* 条目：仿 \datedsubsection —— 左标题 + 右对齐日期 */
+.entry { display:flex; align-items:baseline; gap:10px; margin:3px 0 0; break-after:avoid; }
+.entry .t { font-weight:700; font-size:10.1pt; }
+.entry .t em { font-weight:700; }
+.entry .d { margin-left:auto; flex:0 0 auto; font-size:9.2pt; white-space:nowrap;
+            font-family:"Helvetica Neue", Helvetica, "PingFang SC", sans-serif; }
+.entry .d a { text-decoration:none; border-bottom:1px solid #999; }
+
+/* 仿 \Content 的 itemize */
+ul { list-style:none; margin:2px 0 0; }
+ul li { position:relative; padding-left:13px; margin-bottom:0; }
+ul li::before { content:"•"; position:absolute; left:2px; }
+
+/* 仿 \SimpleEntry 的整行说明 */
+p.line { margin:2px 0; }
+p.note { margin:3px 0 0; }
+dl { display:grid; grid-template-columns:auto 1fr; gap:1px 8px; margin-top:3px; }
+dt { font-weight:700; white-space:nowrap; }
+
+@media print { body { padding:0; } }
+
+/* 抬头下的一行亮点：居中加粗 */
+p.line.highlight { text-align:center; font-weight:700; margin:6px 0 2px;
+                   letter-spacing:.3px; }
+
+/* 长网址允许断行，否则整串换行会在上一行末尾留大片空白 */
+p.line, p.note { overflow-wrap:anywhere; }
+
+/* ===== 三级间距 ===== */
+/* 大项：区块标题（独立产品 / 工作经历 / 教育与其他） */
+h2 { margin:11px 0 3px; }
+/* 中项：每条经历 / 每个产品 */
+.entry { margin:6px 0 0; }
+/* 内部：条目下的 bullet */
+ul { margin:2px 0 0; }
+ul li { margin-bottom:1.5px; }
+p.note { margin:5px 0 0; }
