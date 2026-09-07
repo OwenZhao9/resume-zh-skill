@@ -18,6 +18,24 @@
 
 **<https://resume-zh-4qs.pages.dev>** —— 单个 HTML，不装东西不起服务，打开就是一份空白模板，点着改成自己的。
 
+打不开这个地址就用本地的，功能完全一样：
+
+```bash
+# 方式一：仓库里已经有了，双击打开就行
+open app/index.html            # macOS
+start app\index.html           # Windows
+xdg-open app/index.html        # Linux
+```
+
+或者不 clone 仓库，直接存一个文件：
+
+```bash
+curl -O https://raw.githubusercontent.com/OwenZhao9/resume-zh-skill/main/app/index.html
+open index.html
+```
+
+**这个文件是完全离线的**——CSS、脚本、占位头像全内嵌，不连任何外部资源，断网也能用。自动保存靠浏览器 localStorage，个别浏览器对本地文件禁写存储，那种情况下改完点「下载 HTML」留档就行。
+
 ![在线版](app/preview.png)
 
 工具条上四组东西：

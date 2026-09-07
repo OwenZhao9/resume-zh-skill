@@ -195,7 +195,7 @@ body.app { max-width:none; margin:0; padding:64px 0 60px; background:#e9e7e3; }
   <h1>你的名字</h1><span class="title">求职意向</span>
   <div class="contact">
     <span class="lb">电话</span><span class="cl">：</span><span class="vl">13800138000</span>
-    <span class="lb2 en">邮箱</span><span class="cl">：</span><span class="vl">you@example.com</span>
+    <span class="lb2">邮箱</span><span class="cl">：</span><span class="vl">you@example.com</span>
     <span class="lb">个人主页</span><span class="cl">：</span><span class="vl">example.com</span>
     <span class="lb2 en">GitHub</span><span class="cl">：</span><span class="vl">github.com/you</span>
   </div>
@@ -346,7 +346,13 @@ body.app { max-width:none; margin:0; padding:64px 0 60px; background:#e9e7e3; }
     slider.value = 100; sval.textContent = '100%';
     paint(r.kf <= KF[0] + 1e-9);               // 字号已到下限还超页，就是真的塞不下了
   }
-  function run(){ lock.checked ? applyLocked() : paint(); }
+  // 联系方式标签：纯拉丁字母的关掉两端对齐（否则字距被撑开），中文的一律撑满对齐冒号
+  function fixLabels(){
+    sheet.querySelectorAll('.contact .lb, .contact .lb2').forEach(function(el){
+      el.classList.toggle('en', /^[\x20-\x7E]+$/.test(el.textContent.trim()));
+    });
+  }
+  function run(){ fixLabels(); lock.checked ? applyLocked() : paint(); }
 
   lock.addEventListener('change', function(){
     slider.disabled = lock.checked;
