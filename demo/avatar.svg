@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 600" width="410" height="600">
+  <rect width="410" height="600" fill="#efeae2"/>
+  <!-- 战袍与肩 -->
+  <path d="M20 600 q40-135 185-135 t185 135 z" fill="#8f3b2c"/>
+  <path d="M143 480 q62 66 124 0 l0 52 q-62 52 -124 0 z" fill="#c9a227"/>
+  <!-- 耳 -->
+  <ellipse cx="96" cy="290" rx="30" ry="40" fill="#d3a874"/>
+  <ellipse cx="314" cy="290" rx="30" ry="40" fill="#d3a874"/>
+  <ellipse cx="96" cy="290" rx="15" ry="22" fill="#e8caa6"/>
+  <ellipse cx="314" cy="290" rx="15" ry="22" fill="#e8caa6"/>
+  <!-- 头 -->
+  <ellipse cx="205" cy="280" rx="115" ry="138" fill="#d3a874"/>
+  <!-- 面盘 -->
+  <ellipse cx="205" cy="308" rx="86" ry="104" fill="#f3e2c8"/>
+  <!-- 眉 -->
+  <path d="M146 272 q28-18 54-4" stroke="#4a3324" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <path d="M264 270 q-28-18 -54-4" stroke="#4a3324" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <!-- 眼 -->
+  <ellipse cx="171" cy="304" rx="15" ry="13" fill="#fff"/>
+  <ellipse cx="239" cy="304" rx="15" ry="13" fill="#fff"/>
+  <circle cx="173" cy="305" r="8" fill="#2b2018"/>
+  <circle cx="237" cy="305" r="8" fill="#2b2018"/>
+  <!-- 口鼻 -->
+  <ellipse cx="205" cy="368" rx="46" ry="34" fill="#e8caa6"/>
+  <path d="M197 352 a9 7 0 0 0 16 0" fill="#8d5a3b"/>
+  <path d="M181 379 q24 20 48 0" stroke="#8d5a3b" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <!-- 紧箍：贴额前的一道细金圈 -->
+  <path d="M104 232 q101-40 202 0" stroke="#c9a227" stroke-width="15" fill="none" stroke-linecap="round"/>
+  <path d="M195 216 q10-17 20 0" stroke="#c9a227" stroke-width="11" fill="none" stroke-linecap="round"/>
+</svg>
