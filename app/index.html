@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>中文简历排版器 · 一页 A4</title>
 <style>
-/* ===== 简历本体样式 ===== */
+/* ===== 简历本体（右栏渲染出来的东西） ===== */
 @page { size: A4; margin: 10mm 11mm 10mm; }
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
@@ -105,73 +105,95 @@ li .rt2 { float:right; margin-left:12px; white-space:nowrap; }
 li .rt2 a.ilink { float:none; margin-left:0; }
 
 
-/* ===== 编辑器外壳（打印时全部隐藏） ===== */
+/* ===== 编辑器外壳，打印时全部隐藏 ===== */
 html { background:#e9e7e3; }
-body.app { max-width:none; margin:0; padding:64px 0 60px; background:#e9e7e3; }
-.sheet {
-  width:210mm; min-height:297mm; margin:0 auto; background:#fff;
-  padding:10mm 11mm; box-shadow:0 2px 18px rgba(0,0,0,.13);
-  box-sizing:border-box;
+body.app {
+  max-width:none; margin:0; padding:0; background:#e9e7e3;
+  font:13px/1.5 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif; color:#2b2b2b;
 }
-/* 页高参考线：每 297mm 画一条虚线，超出一页时能看见断在哪 */
-.sheet { background-image:repeating-linear-gradient(to bottom,
-          transparent 0, transparent calc(297mm - 1px),
-          #e04b3a calc(297mm - 1px), #e04b3a 297mm); }
-
 .bar {
-  position:fixed; top:0; left:0; right:0; z-index:99;
-  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
-  padding:9px 18px; background:rgba(252,252,251,.94);
-  backdrop-filter:saturate(180%) blur(12px);
-  border-bottom:1px solid #dcd9d4;
-  font:13px/1.4 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif; color:#333;
+  position:fixed; top:0; left:0; right:0; height:48px; z-index:99;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  padding:0 16px; background:rgba(252,252,251,.95);
+  backdrop-filter:saturate(180%) blur(12px); border-bottom:1px solid #dcd9d4;
 }
 .bar .grp { display:flex; align-items:center; gap:8px; }
 .bar label { user-select:none; cursor:pointer; }
-.bar input[type=range] { width:190px; accent-color:#333; cursor:pointer; }
-.bar input[type=range]:disabled { cursor:not-allowed; opacity:.45; }
-.bar .val { font:12px ui-monospace,SFMono-Regular,Menlo,monospace; color:#666; min-width:44px; }
-.bar button {
+.bar input[type=range] { width:170px; accent-color:#333; cursor:pointer; }
+.bar input[type=range]:disabled { cursor:not-allowed; opacity:.4; }
+.bar .val { font:12px ui-monospace,SFMono-Regular,Menlo,monospace; color:#666; min-width:42px; }
+.bar .sp { flex:1 1 auto; }
+button {
   font:13px/1 inherit; padding:6px 12px; border:1px solid #cfccc6; border-radius:7px;
   background:#fff; color:#333; cursor:pointer;
 }
-.bar button:hover { border-color:#999; }
-.bar .sp { flex:1 1 auto; }
+button:hover { border-color:#999; }
 .pages { font-weight:600; padding:3px 10px; border-radius:20px; background:#e7f0e8; color:#2c6b34; }
 .pages.over { background:#fbe6e3; color:#b03225; }
-.hint { color:#8a8a8a; font-size:12px; }
 
-#ops {
-  position:absolute; z-index:80; display:flex; flex-direction:column; gap:4px;
-  padding:6px; background:#fff; border:1px solid #dcd9d4; border-radius:9px;
-  box-shadow:0 3px 14px rgba(0,0,0,.12);
-  font:12px/1 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
+.wrap { display:flex; align-items:flex-start; gap:0; padding-top:48px; }
+#editor {
+  width:400px; flex:0 0 400px; height:calc(100vh - 48px); overflow-y:auto;
+  padding:16px 16px 80px; background:#f6f5f3; border-right:1px solid #dcd9d4;
 }
-#ops button {
-  font:12px/1 inherit; padding:6px 10px; white-space:nowrap; text-align:left;
-  border:0; border-radius:6px; background:#f3f1ee; color:#333; cursor:pointer;
-}
-#ops button:hover { background:#e5e2dd; }
-#ops button.del { color:#b03225; }
-#ops[hidden] { display:none; }
-.hot { outline:1.5px dashed #b9b4ac; outline-offset:3px; border-radius:2px; }
-@media print { #ops { display:none !important; } .hot { outline:0 !important; } }
+.preview { flex:1 1 auto; height:calc(100vh - 48px); overflow-y:auto; padding:26px 0 60px; }
 
-[contenteditable="true"]:focus { outline:2px solid #6aa9ff; outline-offset:3px; border-radius:2px; }
+/* 左栏控件 */
+.card { background:#fff; border:1px solid #e2dfda; border-radius:10px; padding:12px; margin-bottom:12px; }
+.card > h3 {
+  font-size:12px; font-weight:700; color:#8a857e; letter-spacing:.6px;
+  margin:0 0 10px; display:flex; align-items:center; gap:8px;
+}
+.card > h3 .sp { flex:1 1 auto; }
+.row { display:flex; gap:6px; margin-bottom:6px; align-items:flex-start; }
+.row:last-child { margin-bottom:0; }
+input.f, textarea.f {
+  width:100%; font:13px/1.5 inherit; color:#2b2b2b;
+  padding:6px 8px; border:1px solid #ddd9d3; border-radius:6px; background:#fff;
+}
+input.f:focus, textarea.f:focus { outline:none; border-color:#8aa9d6; box-shadow:0 0 0 2px rgba(138,169,214,.2); }
+textarea.f { resize:vertical; min-height:62px; }
+.mini { flex:0 0 auto; padding:5px 8px; font-size:12px; border-radius:6px; }
+.mini.x { color:#b03225; border-color:#e6d3d0; }
+.lbl { font-size:11.5px; color:#8a857e; margin:8px 0 4px; }
+.lbl:first-child { margin-top:0; }
+.sec { border:1px solid #e2dfda; border-radius:10px; padding:12px; margin-bottom:12px; background:#fff; }
+.sec > .hd { display:flex; gap:6px; align-items:center; margin-bottom:10px; }
+.ent { border:1px dashed #ddd9d3; border-radius:8px; padding:10px; margin-bottom:8px; background:#fbfaf9; }
+.hint { font-size:11.5px; color:#a09a92; margin-top:6px; }
+.add { width:100%; margin-top:6px; border-style:dashed; color:#666; }
+
+/* 右栏纸面：简历本体的字体在这里生效（body 已经被编辑器外壳占用） */
+.sheet {
+  font: calc(9.8pt * var(--kf))/1.45 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
+  color:#000; -webkit-font-smoothing:antialiased;
+}
+.sheet {
+  width:210mm; min-height:297mm; margin:0 auto; background:#fff;
+  padding:10mm 11mm; box-sizing:border-box; box-shadow:0 2px 18px rgba(0,0,0,.13);
+  background-image:repeating-linear-gradient(to bottom,
+     transparent 0, transparent calc(297mm - 1px),
+     #e04b3a calc(297mm - 1px), #e04b3a 297mm);
+}
 
 @media print {
-  html, body.app { background:#fff; padding:0; margin:0; }
-  .bar, .hint { display:none !important; }
+  html, body.app { background:#fff; }
+  .bar, #editor, .hint { display:none !important; }
+  .wrap { display:block; padding:0; }
+  .preview { height:auto; overflow:visible; padding:0; }
   .sheet { width:auto; min-height:0; margin:0; padding:0; box-shadow:none; background-image:none; }
+}
+@media (max-width:1100px) {
+  .wrap { flex-direction:column; }
+  #editor { width:100%; flex:none; height:auto; border-right:0; border-bottom:1px solid #dcd9d4; }
+  .preview { height:auto; width:100%; overflow-x:auto; }
 }
 </style>
 </head>
 <body class="app">
 
 <div class="bar">
-  <div class="grp">
-    <label for="lock"><input type="checkbox" id="lock" checked> 锁定一页</label>
-  </div>
+  <div class="grp"><label><input type="checkbox" id="lock" checked> 锁定一页</label></div>
   <div class="grp">
     <span>缩放</span>
     <input type="range" id="scale" min="70" max="140" step="1" value="100" disabled>
@@ -182,332 +204,318 @@ body.app { max-width:none; margin:0; padding:64px 0 60px; background:#e9e7e3; }
   <div class="grp">
     <button id="print">导出 PDF</button>
     <button id="save">下载 HTML</button>
-    <button id="addSection">+ 区块</button>
-    <button id="clear">清空内容</button>
+    <button id="reset">重置模板</button>
   </div>
 </div>
 
-<div id="ops" hidden></div>
-
-<div class="sheet" id="sheet">
-<header contenteditable="true">
-  <div class="hd-l">
-  <h1>你的名字</h1><span class="title">求职意向</span>
-  <div class="contact">
-    <span class="lb">电话</span><span class="cl">：</span><span class="vl">13800138000</span>
-    <span class="lb2">邮箱</span><span class="cl">：</span><span class="vl">you@example.com</span>
-    <span class="lb">个人主页</span><span class="cl">：</span><span class="vl">example.com</span>
-    <span class="lb2 en">GitHub</span><span class="cl">：</span><span class="vl">github.com/you</span>
-  </div>
-  </div>
-  <img class="photo" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20410%20600%22%3E%3Crect%20width%3D%22410%22%20height%3D%22600%22%20fill%3D%22%23eeebe6%22/%3E%3Ccircle%20cx%3D%22205%22%20cy%3D%22238%22%20r%3D%2286%22%20fill%3D%22%23d8d3cb%22/%3E%3Cpath%20d%3D%22M45%20600%20q30-170%20160-170%20t160%20170%20z%22%20fill%3D%22%23d8d3cb%22/%3E%3Ctext%20x%3D%22205%22%20y%3D%22560%22%20font-family%3D%22PingFang%20SC%2Csans-serif%22%20font-size%3D%2234%22%20fill%3D%22%23a9a29a%22%20text-anchor%3D%22middle%22%3E%E8%AF%81%E4%BB%B6%E7%85%A7%3C/text%3E%3C/svg%3E" alt="证件照">
-</header>
-
-<p class="line highlight" contenteditable="true">一行亮点　·　放三到四个最硬的结果　·　数字要具体不要取整　·　这一行没有就删掉</p>
-
-<h2 contenteditable="true">项目 / 作品</h2>
-
-<div class="entry" contenteditable="true"><span class="t">项目名称 平台或角色</span><span class="d">example.com</span></div>
-<ul contenteditable="true">
-  <li>这个项目解决什么问题，给谁用，做出来的结果是什么。先写背景和动机，再写做了什么</li>
-  <li>技术选型与关键取舍：为什么这么做，代价是什么。专有名词原样写，不缩写不翻译</li>
-</ul>
-
-<div class="entry" contenteditable="true"><span class="t">项目名称 平台或角色</span><span class="d">example.com</span></div>
-<ul contenteditable="true">
-  <li>一条要点写一件事，数字具体到小数位，比如次留 1.91%、80 万条数据、1600 余支队伍</li>
-</ul>
-
-<div class="entry" contenteditable="true"><span class="t">项目名称 平台或角色</span><span class="d">example.com</span></div>
-<ul contenteditable="true">
-  <li>做了什么、为谁做、结果如何。一条要点只说一件事，说不完就再起一条</li>
-  <li>遇到的关键问题和你的解法；失败过几次、最后怎么绕过去的，比顺利完成更有说服力</li>
-</ul>
-
-<h2 contenteditable="true">工作经历</h2>
-
-<div class="entry" contenteditable="true"><span class="t">公司 职位</span><span class="d">2024.01 – 至今 · 城市</span></div>
-<ul contenteditable="true">
-  <li>当时的处境是什么，为什么要做这件事</li>
-  <li>你负责哪一段，跟谁配合，最后落到什么结果</li>
-  <li>流程可以用连字符串成一串：需求分析-产品文档-设计-开发-埋点-测试-灰度-上线-数据</li>
-</ul>
-
-<div class="entry" contenteditable="true"><span class="t">公司 职位</span><span class="d">2022.03 – 2023.12 · 城市</span></div>
-<ul contenteditable="true">
-  <li>写你真正做过的事，不写岗位职责</li>
-</ul>
-
-<div class="entry" contenteditable="true"><span class="t">公司 职位</span><span class="d">2020.06 – 2022.02 · 城市</span></div>
-<ul contenteditable="true">
-  <li>直说抄谁、对标谁，不包装：对标某某产品的某个功能，参考某几个 APP 的做法</li>
-  <li>数据用真实口径：次留、七留、DAU、转化率，写清是哪个口径下的数</li>
-</ul>
-
-<h2 contenteditable="true">技能</h2>
-
-<div class="entry" contenteditable="true"><span class="t">方向一</span><span class="d">熟练程度或年限</span></div>
-<ul contenteditable="true">
-  <li>具体到工具和版本，专有名词原样写：TypeScript、Next.js 16、PostgreSQL、Figma</li>
-</ul>
-
-<div class="entry" contenteditable="true"><span class="t">方向二</span><span class="d">熟练程度或年限</span></div>
-<ul contenteditable="true">
-  <li>只写真会用的；写上去的每一样都可能被追问细节</li>
-</ul>
-
-<h2 contenteditable="true">教育与其他</h2>
-
-<div class="entry" contenteditable="true"><span class="t">学校 专业 学历</span><span class="d">2018.09 – 2022.06</span></div>
-<ul contenteditable="true">
-  <li><strong>竞赛：</strong>比赛名称与名次，参赛规模写清楚</li>
-  <li><strong>兴趣与特长：</strong>能佐证性格或长期投入的事，带具体成绩</li>
-  <li><strong>其他：</strong>语言证书、开源、写作、社区，能证明长期投入的都可以放</li>
-</ul>
+<div class="wrap">
+  <div id="editor"></div>
+  <div class="preview"><div class="sheet" id="sheet"></div></div>
 </div>
 
-<p class="hint" style="text-align:center;margin:14px auto 0">
-  点任何一段文字直接改。改动存在本机浏览器里，换设备不会同步——要留档就点「下载 HTML」。
-</p>
-
+<script type="application/json" id="data">null</script>
 <script>
 (function(){
-  var AVAIL = (297-20) * 96 / 25.4;        // 一页可用高度 px @96dpi
-  var SAFE  = 4;                            // 底部安全余量
+  var AVAIL = (297-20)*96/25.4, SAFE = 4;
   var KS = [0.42, 2.20], KF = [0.86, 1.08];
-  var R = document.documentElement;
-  var sheet = document.getElementById('sheet');
-  var lock  = document.getElementById('lock');
-  var slider= document.getElementById('scale');
-  var sval  = document.getElementById('scaleVal');
-  var pagesEl = document.getElementById('pages');
-  var base = {ks:1, kf:1};                  // 解锁那一刻的基准，滑块在此之上乘
+  var R = document.documentElement, KEY = 'resume-zh-data';
+  var sheet = document.getElementById('sheet'), editor = document.getElementById('editor');
+  var lock = document.getElementById('lock'), slider = document.getElementById('scale');
+  var sval = document.getElementById('scaleVal'), pagesEl = document.getElementById('pages');
+  var base = {ks:1, kf:1};
 
+  var PHOTO = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 600"><rect width="410" height="600" fill="#eeebe6"/>'+
+    '<circle cx="205" cy="238" r="86" fill="#d8d3cb"/><path d="M45 600 q30-170 160-170 t160 170 z" fill="#d8d3cb"/>'+
+    '<text x="205" y="560" font-family="PingFang SC,sans-serif" font-size="34" fill="#a9a29a" text-anchor="middle">证件照</text></svg>');
+
+  var DEFAULT = {
+    name:'你的名字', title:'求职意向', photo:'',
+    contacts:[
+      {label:'电话', value:'13800138000'},
+      {label:'邮箱', value:'you@example.com'},
+      {label:'个人主页', value:'example.com'},
+      {label:'GitHub', value:'github.com/you'}
+    ],
+    highlight:'一行亮点　·　放三到四个最硬的结果　·　数字要具体不要取整　·　没有就留空',
+    sections:[
+      { title:'项目 / 作品', entries:[
+        { t:'项目名称 平台或角色', d:'example.com', bullets:[
+          '这个项目解决什么问题，给谁用，做出来的结果是什么。先写背景和动机，再写做了什么',
+          '技术选型与关键取舍：为什么这么做，代价是什么。专有名词原样写，不缩写不翻译'] },
+        { t:'项目名称 平台或角色', d:'example.com', bullets:[
+          '一条要点写一件事，数字具体到小数位，比如次留 1.91%、80 万条数据、1600 余支队伍'] }
+      ]},
+      { title:'工作经历', entries:[
+        { t:'公司 职位', d:'2024.01 – 至今 · 城市', bullets:[
+          '当时的处境是什么，为什么要做这件事',
+          '你负责哪一段，跟谁配合，最后落到什么结果',
+          '流程可以用连字符串成一串：需求分析-产品文档-设计-开发-埋点-测试-灰度-上线-数据'] },
+        { t:'公司 职位', d:'2022.03 – 2023.12 · 城市', bullets:[
+          '写你真正做过的事，不写岗位职责',
+          '直说抄谁、对标谁，不包装：对标某某产品的某个功能'] }
+      ]},
+      { title:'技能', entries:[
+        { t:'方向一', d:'熟练程度或年限', bullets:[
+          '具体到工具和版本，专有名词原样写：TypeScript、Next.js 16、PostgreSQL'] },
+        { t:'方向二', d:'熟练程度或年限', bullets:[
+          '只写真会用的；写上去的每一样都可能被追问细节'] }
+      ]},
+      { title:'教育与其他', entries:[
+        { t:'学校 专业 学历', d:'2018.09 – 2022.06', bullets:[
+          '竞赛：比赛名称与名次，参赛规模写清楚',
+          '兴趣与特长：能佐证性格或长期投入的事，带具体成绩'] }
+      ]}
+    ]
+  };
+
+  var data = load();
+  function load(){
+    try {
+      var inline = JSON.parse(document.getElementById('data').textContent);
+      if (inline && inline.sections) return inline;
+    } catch(e){}
+    try {
+      var s = localStorage.getItem(KEY);
+      if (s) { var d = JSON.parse(s); if (d && d.sections) return d; }
+    } catch(e){}
+    return JSON.parse(JSON.stringify(DEFAULT));
+  }
+  function persist(){ try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){} }
+
+  // ——— 渲染右栏 ———
+  var E = function(s){ return String(s==null?'':s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+  var URLRE = /(?:^|\s)((?:https?:\/\/)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:\/[^\s]*)?)\s*$/i;
+
+  function linkify(text){                       // 行尾的网址拆出来，靠 CSS 浮到右端
+    var m = String(text||'').match(URLRE);
+    if (!m) return E(text);
+    var url = m[1], head = text.slice(0, text.length - m[0].length);
+    var href = /^https?:/i.test(url) ? url : 'https://' + url;
+    return E(head) + '<a class="ilink" href="' + E(href) + '">' + E(url) + '</a>';
+  }
+  function isLatin(s){ return /^[\x20-\x7E]+$/.test(String(s||'').trim()); }
+
+  function renderSheet(){
+    var h = [];
+    h.push('<header><div class="hd-l"><h1>'+E(data.name)+'</h1>'+
+           (data.title ? '<span class="title">'+E(data.title)+'</span>' : ''));
+    if (data.contacts.length){
+      h.push('<div class="contact">');
+      data.contacts.forEach(function(c, i){
+        var cls = (i % 2 === 0 ? 'lb' : 'lb2') + (isLatin(c.label) ? ' en' : '');
+        h.push('<span class="'+cls+'">'+E(c.label)+'</span><span class="cl">：</span>'+
+               '<span class="vl">'+linkifyContact(c.value)+'</span>');
+      });
+      h.push('</div>');
+    }
+    h.push('</div><img class="photo" src="'+E(data.photo || PHOTO)+'" alt="证件照"></header>');
+    if (data.highlight) h.push('<p class="line highlight">'+E(data.highlight)+'</p>');
+    data.sections.forEach(function(s){
+      h.push('<h2>'+E(s.title)+'</h2>');
+      s.entries.forEach(function(en){
+        h.push('<div class="entry"><span class="t">'+E(en.t)+'</span>'+
+               (en.d ? '<span class="d">'+linkifyD(en.d)+'</span>' : '')+'</div>');
+        var bs = (en.bullets||[]).filter(function(b){ return String(b).trim(); });
+        if (bs.length) h.push('<ul>'+bs.map(function(b){ return '<li>'+linkify(b)+'</li>'; }).join('')+'</ul>');
+      });
+    });
+    sheet.innerHTML = h.join('\n');
+  }
+  function linkifyContact(v){
+    v = String(v||'');
+    if (/^[\d +\-()]{6,}$/.test(v)) return '<a href="tel:'+E(v.replace(/[^\d+]/g,''))+'">'+E(v)+'</a>';
+    if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return '<a href="mailto:'+E(v)+'">'+E(v)+'</a>';
+    if (/^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+/i.test(v))
+      return '<a href="'+E(/^https?:/i.test(v)?v:'https://'+v)+'">'+E(v)+'</a>';
+    return E(v);
+  }
+  function linkifyD(d){
+    if (/^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(String(d).trim()))
+      return '<a href="'+E(/^https?:/i.test(d)?d:'https://'+d)+'">'+E(d)+'</a>';
+    return E(d);
+  }
+
+  // ——— 渲染左栏 ———
+  function renderEditor(){
+    var h = [];
+    h.push('<div class="card"><h3>基本信息</h3>'+
+      '<div class="lbl">姓名</div><input class="f" data-k="name" value="'+E(data.name)+'">'+
+      '<div class="lbl">求职意向 / 头衔</div><input class="f" data-k="title" value="'+E(data.title)+'">'+
+      '<div class="lbl">证件照</div><input type="file" accept="image/*" id="photoFile">'+
+      (data.photo ? '<button class="mini x" data-act="rmphoto" style="margin-top:6px">移除照片</button>' : '')+
+      '<div class="lbl">一行亮点</div><textarea class="f" data-k="highlight" style="min-height:48px">'+E(data.highlight)+'</textarea>'+
+      '</div>');
+
+    h.push('<div class="card"><h3>联系方式<span class="sp"></span></h3>');
+    data.contacts.forEach(function(c,i){
+      h.push('<div class="row">'+
+        '<input class="f" style="flex:0 0 92px" data-c="'+i+'" data-f="label" value="'+E(c.label)+'">'+
+        '<input class="f" data-c="'+i+'" data-f="value" value="'+E(c.value)+'">'+
+        '<button class="mini x" data-act="delc" data-i="'+i+'">×</button></div>');
+    });
+    h.push('<button class="add" data-act="addc">+ 加一行联系方式</button>'+
+           '<div class="hint">两列排布，第 1、3、5… 条在左列。标签是中文会自动两端对齐，纯英文不对齐。</div></div>');
+
+    data.sections.forEach(function(s,si){
+      h.push('<div class="sec"><div class="hd">'+
+        '<input class="f" data-s="'+si+'" data-f="title" value="'+E(s.title)+'">'+
+        '<button class="mini" data-act="sup" data-s="'+si+'" title="上移">↑</button>'+
+        '<button class="mini" data-act="sdn" data-s="'+si+'" title="下移">↓</button>'+
+        '<button class="mini x" data-act="dels" data-s="'+si+'">×</button></div>');
+      s.entries.forEach(function(en,ei){
+        h.push('<div class="ent">'+
+          '<div class="row">'+
+            '<input class="f" data-s="'+si+'" data-e="'+ei+'" data-f="t" placeholder="条目标题" value="'+E(en.t)+'">'+
+            '<button class="mini" data-act="eup" data-s="'+si+'" data-e="'+ei+'" title="上移">↑</button>'+
+            '<button class="mini" data-act="edn" data-s="'+si+'" data-e="'+ei+'" title="下移">↓</button>'+
+            '<button class="mini x" data-act="dele" data-s="'+si+'" data-e="'+ei+'">×</button>'+
+          '</div>'+
+          '<input class="f" data-s="'+si+'" data-e="'+ei+'" data-f="d" placeholder="右侧：时间 · 地点，或一个网址" value="'+E(en.d)+'">'+
+          '<textarea class="f" data-s="'+si+'" data-e="'+ei+'" data-f="bullets" placeholder="一行一条要点">'+E((en.bullets||[]).join('\n'))+'</textarea>'+
+        '</div>');
+      });
+      h.push('<button class="add" data-act="adde" data-s="'+si+'">+ 加一条经历</button></div>');
+    });
+
+    h.push('<button class="add" data-act="adds" style="margin-bottom:10px">+ 加一个区块</button>'+
+           '<div class="hint">要点里行尾写网址会自动做成右对齐的可点链接。</div>');
+    editor.innerHTML = h.join('');
+  }
+
+  // ——— 自适应与页数 ———
   function bottom(){
     var e = sheet.getElementsByTagName('*'), m = 0, top = sheet.getBoundingClientRect().top;
     for (var i=0;i<e.length;i++){
-      var t = e[i].tagName; if (t==='SCRIPT'||t==='STYLE') continue;
       var b = e[i].getBoundingClientRect().bottom - top; if (b>m) m = b;
     }
-    return m;
+    return m + 10*96/25.4;                       // 加回上边距
   }
-  function set(ks, kf){
-    R.style.setProperty('--ks', ks);
-    R.style.setProperty('--kf', kf);
-  }
-  function slackAt(ks, kf){ set(ks, kf); return AVAIL - bottom(); }
-
+  function set(ks, kf){ R.style.setProperty('--ks', ks); R.style.setProperty('--kf', kf); }
+  function slackAt(ks, kf){ set(ks, kf); return AVAIL - (bottom() - 10*96/25.4); }
   function bestKs(kf, floor){
     var lo = floor==null ? 0.80 : floor, hi = KS[1];
-    if (slackAt(lo, kf) < SAFE) return null;
-    if (slackAt(hi, kf) >= SAFE) return hi;
+    if (slackAt(lo,kf) < SAFE) return null;
+    if (slackAt(hi,kf) >= SAFE) return hi;
     for (var i=0;i<16;i++){ var mid=(lo+hi)/2; if (slackAt(mid,kf)>=SAFE) lo=mid; else hi=mid; }
     return lo;
   }
-  // 锁定模式：先压间距，压到 0.80 感知下限才动字号，字号到底才允许间距继续跌
   function fit(){
     var kf = 1, ks = bestKs(1), f;
     if (ks === null){
       for (f=0.99; f>=KF[0]-1e-9; f-=0.01){
-        f = +f.toFixed(2); ks = bestKs(f);
-        if (ks !== null){ kf = f; break; }
+        f=+f.toFixed(2); ks=bestKs(f); if (ks!==null){ kf=f; break; }
       }
-      if (ks === null){ kf = KF[0]; ks = bestKs(kf, KS[0]); }
-      if (ks === null){ ks = KS[0]; }
+      if (ks === null){ kf=KF[0]; ks=bestKs(kf, KS[0]); }
+      if (ks === null) ks = KS[0];
     } else if (ks >= KS[1]-1e-6 && slackAt(KS[1],1) > 30){
       for (f=1.01; f<=KF[1]+1e-9; f+=0.01){
-        f = +f.toFixed(2); var t = bestKs(f); if (t===null) break;
-        kf = f; ks = t; if (slackAt(ks,kf) <= 30) break;
+        f=+f.toFixed(2); var t=bestKs(f); if (t===null) break;
+        kf=f; ks=t; if (slackAt(ks,kf)<=30) break;
       }
     }
-    set(ks, kf);
-    return {ks:ks, kf:kf};
+    set(ks, kf); return {ks:ks, kf:kf};
   }
-
-  function pageCount(){
-    return Math.max(1, Math.ceil((bottom() - SAFE) / AVAIL));
-  }
+  function pageCount(){ return Math.max(1, Math.ceil((bottom() - 10*96/25.4 - SAFE) / AVAIL)); }
   function paint(atFloor){
     var n = pageCount();
-    pagesEl.textContent = n + ' 页' + (n > 1 && atFloor ? ' · 已压到最小，请删减内容' : '');
-    pagesEl.className = 'pages' + (n > 1 ? ' over' : '');
-    sheet.style.minHeight = (n * 297) + 'mm';
+    pagesEl.textContent = n + ' 页' + (n>1 && atFloor ? ' · 已压到最小，请删减' : '');
+    pagesEl.className = 'pages' + (n>1 ? ' over' : '');
+    sheet.style.minHeight = (n*297) + 'mm';
   }
-
   function applyManual(){
-    var k = slider.value / 100;
-    sval.textContent = slider.value + '%';
-    set(+(base.ks * k).toFixed(4), +(base.kf * k).toFixed(4));
-    paint();
+    var k = slider.value/100; sval.textContent = slider.value + '%';
+    set(+(base.ks*k).toFixed(4), +(base.kf*k).toFixed(4)); paint();
   }
   function applyLocked(){
-    var r = fit();
-    base = r;                                  // 记住解，解锁时从这里起步
+    var r = fit(); base = r;
     slider.value = 100; sval.textContent = '100%';
-    paint(r.kf <= KF[0] + 1e-9);               // 字号已到下限还超页，就是真的塞不下了
+    paint(r.kf <= KF[0] + 1e-9);
   }
-  // 联系方式标签：纯拉丁字母的关掉两端对齐（否则字距被撑开），中文的一律撑满对齐冒号
-  function fixLabels(){
-    sheet.querySelectorAll('.contact .lb, .contact .lb2').forEach(function(el){
-      el.classList.toggle('en', /^[\x20-\x7E]+$/.test(el.textContent.trim()));
-    });
-  }
-  function run(){ fixLabels(); lock.checked ? applyLocked() : paint(); }
+  function refit(){ lock.checked ? applyLocked() : paint(); }
 
+  var t1;
+  function update(reEditor){
+    renderSheet();
+    if (reEditor) renderEditor();
+    refit(); persist();
+  }
+
+  // ——— 左栏交互 ———
+  editor.addEventListener('input', function(e){
+    var el = e.target; if (!el.classList.contains('f')) return;
+    var k = el.getAttribute('data-k');
+    if (k){ data[k] = el.value; }
+    else if (el.hasAttribute('data-c')){
+      data.contacts[+el.getAttribute('data-c')][el.getAttribute('data-f')] = el.value;
+    } else if (el.hasAttribute('data-e')){
+      var en = data.sections[+el.getAttribute('data-s')].entries[+el.getAttribute('data-e')];
+      var f = el.getAttribute('data-f');
+      if (f === 'bullets') en.bullets = el.value.split('\n');
+      else en[f] = el.value;
+    } else if (el.hasAttribute('data-s')){
+      data.sections[+el.getAttribute('data-s')].title = el.value;
+    }
+    clearTimeout(t1); t1 = setTimeout(function(){ update(false); }, 260);
+  });
+
+  editor.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-act]'); if (!b) return;
+    var act = b.getAttribute('data-act');
+    var si = +b.getAttribute('data-s'), ei = +b.getAttribute('data-e'), i = +b.getAttribute('data-i');
+    var S = data.sections;
+    if (act === 'addc') data.contacts.push({label:'标签', value:'内容'});
+    if (act === 'delc') data.contacts.splice(i,1);
+    if (act === 'rmphoto') data.photo = '';
+    if (act === 'adds') S.push({title:'新区块', entries:[{t:'条目标题', d:'时间 · 地点', bullets:['写一条要点']}]});
+    if (act === 'dels') S.splice(si,1);
+    if (act === 'sup' && si>0) S.splice(si-1,0,S.splice(si,1)[0]);
+    if (act === 'sdn' && si<S.length-1) S.splice(si+1,0,S.splice(si,1)[0]);
+    if (act === 'adde') S[si].entries.push({t:'条目标题', d:'时间 · 地点', bullets:['写一条要点']});
+    if (act === 'dele') S[si].entries.splice(ei,1);
+    if (act === 'eup' && ei>0){ var E1=S[si].entries; E1.splice(ei-1,0,E1.splice(ei,1)[0]); }
+    if (act === 'edn'){ var E2=S[si].entries; if (ei<E2.length-1) E2.splice(ei+1,0,E2.splice(ei,1)[0]); }
+    update(true);
+  });
+
+  editor.addEventListener('change', function(e){
+    if (e.target.id !== 'photoFile' || !e.target.files[0]) return;
+    var fr = new FileReader();
+    fr.onload = function(){ data.photo = fr.result; update(true); };
+    fr.readAsDataURL(e.target.files[0]);
+  });
+
+  // ——— 工具条 ———
   lock.addEventListener('change', function(){
     slider.disabled = lock.checked;
     if (lock.checked) applyLocked();
-    else {                                     // 解锁：冻结当前比例为基准，滑块从 100% 起
+    else {
       var cs = getComputedStyle(R);
-      base = { ks:parseFloat(cs.getPropertyValue('--ks')) || 1,
-               kf:parseFloat(cs.getPropertyValue('--kf')) || 1 };
+      base = { ks:parseFloat(cs.getPropertyValue('--ks'))||1, kf:parseFloat(cs.getPropertyValue('--kf'))||1 };
       slider.value = 100; applyManual();
     }
   });
   slider.addEventListener('input', applyManual);
-
-  // —— 编辑与保存 ——
-  var KEY = 'resume-zh-app';
-  var timer;
-  sheet.addEventListener('input', function(){
-    clearTimeout(timer);
-    timer = setTimeout(function(){
-      run();
-      try { localStorage.setItem(KEY, sheet.innerHTML); } catch(e){}
-    }, 500);
-  });
-  try {
-    var saved = localStorage.getItem(KEY);
-    if (saved) sheet.innerHTML = saved;
-  } catch(e){}
-
   document.getElementById('print').addEventListener('click', function(){
     if (lock.checked) applyLocked();
     window.print();
   });
   document.getElementById('save').addEventListener('click', function(){
+    document.getElementById('data').textContent = JSON.stringify(data);
     var doc = '<!doctype html>\n' + document.documentElement.outerHTML;
+    document.getElementById('data').textContent = 'null';
     var a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([doc], {type:'text/html;charset=utf-8'}));
-    a.download = '简历.html'; a.click();
+    a.download = (data.name || '简历') + '.html'; a.click();
   });
-  document.getElementById('clear').addEventListener('click', function(){
-    if (!confirm('清空示例内容，只留下空白结构？')) return;
-    sheet.querySelectorAll('h1,.title,.vl,.t,.d,li,p.line,.sub').forEach(function(el){ el.textContent = ''; });
-    try { localStorage.setItem(KEY, sheet.innerHTML); } catch(e){}
-    run();
+  document.getElementById('reset').addEventListener('click', function(){
+    if (!confirm('丢掉当前内容，恢复成空白模板？')) return;
+    data = JSON.parse(JSON.stringify(DEFAULT)); update(true);
   });
 
-  // —— 结构编辑：加区块 / 加条目 / 加要点 / 删 ——
-  var ops = document.getElementById('ops');
-  var hot = null, hideTimer;
-
-  function editable(el){
-    el.querySelectorAll('header,h2,ul,dl,p,.entry').forEach(function(x){ x.contentEditable='true'; });
-    if (/^(H2|UL|DL|P)$/.test(el.tagName) || el.classList.contains('entry')) el.contentEditable='true';
-  }
-  function changed(){
-    run();
-    try { localStorage.setItem(KEY, sheet.innerHTML); } catch(e){}
-  }
-  function mk(html){
-    var d = document.createElement('div'); d.innerHTML = html.trim();
-    return Array.prototype.slice.call(d.childNodes);
-  }
-  var TPL = {
-    section: '<h2>新区块</h2>\n<div class="entry"><span class="t">条目标题</span><span class="d">时间 · 地点</span></div>\n<ul><li>写一条要点</li></ul>',
-    entry:   '<div class="entry"><span class="t">条目标题</span><span class="d">时间 · 地点</span></div>\n<ul><li>写一条要点</li></ul>',
-    bullet:  '<li>写一条要点</li>'
-  };
-  function insertAfter(nodes, ref){
-    nodes.forEach(function(n){ ref.parentNode.insertBefore(n, ref.nextSibling); ref = n;
-      if (n.nodeType === 1) editable(n); });
-    return nodes[0];
-  }
-  function focusFirst(node){
-    var t = node.querySelector ? (node.querySelector('.t') || node.querySelector('li') || node) : node;
-    var r = document.createRange(); r.selectNodeContents(t);
-    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
-  }
-
-  function opsFor(el){
-    var kind = el.tagName === 'H2' ? 'h2'
-             : el.classList.contains('entry') ? 'entry'
-             : el.tagName === 'LI' ? 'li' : null;
-    if (!kind) return null;
-    var b = [];
-    if (kind === 'li')    b = [['+ 要点','bullet'],['删掉这条','del']];
-    if (kind === 'entry') b = [['+ 要点','bullet'],['+ 条目','entry'],['删掉这条','del']];
-    if (kind === 'h2')    b = [['+ 条目','entry'],['+ 区块','section'],['删掉整块','del']];
-    return b;
-  }
-  function showOps(el){
-    var b = opsFor(el); if (!b) return;
-    if (hot && hot !== el) hot.classList.remove('hot');
-    hot = el; hot.classList.add('hot');
-    ops.innerHTML = b.map(function(x){
-      return '<button data-op="'+x[1]+'"'+(x[1]==='del'?' class="del"':'')+'>'+x[0]+'</button>';
-    }).join('');
-    ops.hidden = false;
-    var r = el.getBoundingClientRect(), sr = sheet.getBoundingClientRect();
-    ops.style.top  = (r.top + window.scrollY - 4) + 'px';
-    ops.style.left = (sr.left + window.scrollX - ops.offsetWidth - 12) + 'px';
-  }
-  function hideOps(){
-    hideTimer = setTimeout(function(){
-      ops.hidden = true; if (hot) hot.classList.remove('hot'); hot = null;
-    }, 260);
-  }
-  sheet.addEventListener('mouseover', function(e){
-    var el = e.target.closest('h2, .entry, li'); if (!el || !sheet.contains(el)) return;
-    clearTimeout(hideTimer); showOps(el);
-  });
-  sheet.addEventListener('mouseleave', hideOps);
-  ops.addEventListener('mouseenter', function(){ clearTimeout(hideTimer); });
-  ops.addEventListener('mouseleave', hideOps);
-
-  ops.addEventListener('click', function(e){
-    var op = e.target.getAttribute('data-op'); if (!op || !hot) return;
-    if (op === 'del'){
-      var next = hot.nextElementSibling;
-      if (hot.classList.contains('entry') && next && next.tagName === 'UL') next.remove();
-      if (hot.tagName === 'H2'){                 // 删区块：连同它下面的条目一起
-        var n = hot.nextElementSibling;
-        while (n && n.tagName !== 'H2'){ var t = n.nextElementSibling; n.remove(); n = t; }
-      }
-      if (hot.tagName === 'LI' && hot.parentNode.children.length === 1) hot.parentNode.remove();
-      else hot.remove();
-      ops.hidden = true; hot = null; changed(); return;
-    }
-    var ref = hot, html = TPL[op];
-    if (op === 'bullet'){
-      if (hot.tagName === 'LI') ref = hot;
-      else { var ul = hot.nextElementSibling;                     // 条目下面那个 ul
-             if (!ul || ul.tagName !== 'UL'){ ul = document.createElement('ul'); hot.parentNode.insertBefore(ul, hot.nextSibling); editable(ul); }
-             ref = ul.lastElementChild; 
-             if (!ref){ ul.innerHTML = TPL.bullet; editable(ul); focusFirst(ul.firstElementChild); changed(); return; } }
-    }
-    if (op === 'entry' && hot.tagName !== 'H2'){                   // 从条目加：加在它的 ul 后面
-      var u = hot.nextElementSibling; if (u && u.tagName === 'UL') ref = u;
-    }
-    if (op === 'section'){                                          // 新区块加到整份最后
-      ref = sheet.lastElementChild;
-    }
-    var first = insertAfter(mk(html), ref);
-    focusFirst(first); changed();
-  });
-
-  document.getElementById('addSection').addEventListener('click', function(){
-    var first = insertAfter(mk(TPL.section), sheet.lastElementChild);
-    focusFirst(first); changed();
-    first.scrollIntoView({block:'center'});
-  });
-
-  // 让整份简历可编辑
-  sheet.querySelectorAll('header,h2,ul,dl,p,.entry').forEach(function(el){ el.contentEditable = 'true'; });
-
-  window.addEventListener('load', run);
-  run();
+  window.addEventListener('load', refit);
+  update(true);
 })();
 </script>
 </body>
