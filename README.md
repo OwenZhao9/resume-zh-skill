@@ -14,9 +14,23 @@
 
 配套还有两份东西：`references/voice.md` 是一套「去 AI 味」的中文文案规则，`references/workflow.md` 是人和 agent 同时改一份文件不互相覆盖的流程。
 
+## 在线版：打开就能用
+
+**<https://resume-zh-4qs.pages.dev>** —— 单个 HTML 文件，不装东西、不起服务，打开直接在页面上填自己的信息。
+
+工具条上三个东西：
+
+- **锁定一页**（默认开）。加内容时版面自动收，永远一页；压到最小字号还塞不下会提示你删减。
+- **缩放滑块**。取消锁定后可用。这时候比例被冻结在当前值，继续加内容就会顶到第二页、第三页；你可以拖滑块整体压回一页，也可以自己删几句。
+- **页数**。实时显示当前是几页，超页变红；纸面上每 297mm 有一条红色虚线，能看出断在哪。
+
+右边是导出 PDF、下载 HTML、清空内容。改动自动存在本机浏览器里，换设备不同步，要留档就下载 HTML。
+
+页面内容就是下面这份样例，直接改成自己的即可。
+
 ## 长什么样
 
-拿《西游记》的公开设定排了一份样例，可以直接打开改着玩：[`demo/sun-wukong.html`](demo/sun-wukong.html) · [PDF](demo/sun-wukong.pdf)
+拿《西游记》的公开设定排了一份样例：[`demo/sun-wukong.html`](demo/sun-wukong.html) · [PDF](demo/sun-wukong.pdf)
 
 ![孙悟空简历样例](demo/preview.png)
 
@@ -80,6 +94,7 @@ pdfinfo 简历.pdf | grep Pages   # 必须是 1
 | `scripts/server.py` | 本地存盘服务：页面改动写回文件，带版本校验与自动备份 |
 | `scripts/make_editable.py` | 从静态 HTML 生成可编辑版 |
 | `scripts/check.py` | 格式自检 |
+| `app/index.html` | 在线版单文件，含缩放滑块与锁定一页开关 |
 | `templates/style.css` | 简历样式 |
 | `templates/*.cls *.sty` | LaTeX 版式，来自 Auto-CV |
 
