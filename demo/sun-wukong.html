@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>孙悟空 · 斗战胜佛</title>
+<style>
+@page { size: A4; margin: 10mm 11mm 10mm; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font: 9.8pt/1.45 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
+  color:#000; background:#fff; max-width:188mm; margin:0 auto;
+  -webkit-font-smoothing: antialiased;
+}
+a { color:#000; text-decoration:none; }
+/* 正文里的内联链接：加下划线，让人看得出可点 */
+a.ilink { border-bottom:0.5px solid #888; }
+strong { font-weight:700; }
+em { font-style:italic; }
+
+/* 抬头：大号无衬线姓名，仿 LaTeX 的 \MyName（Helvetica） */
+header { margin-bottom:7px; display:flex; align-items:flex-start; gap:14px; }
+.hd-l { flex:1 1 auto; min-width:0; }
+/* 证件照：无边框、无圆角、无滤镜，保持原色 */
+.photo { flex:0 0 auto; width:18.9mm; height:26.2mm; display:block; align-self:flex-end;
+         object-fit:cover; object-position:center bottom; }  /* 裁掉照片顶部 32 行纯白 */
+h1 { font:600 23pt/1.1 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
+     letter-spacing:2px; display:inline-block; }
+.title { font:500 11.5pt/1 "Helvetica Neue", "PingFang SC", sans-serif; margin-left:14px; color:#333; }
+/* 六列网格：标签 | 冒号 | 值，两组。
+   标签用两端对齐（text-align-last:justify）撑满固定宽度，
+   于是左边缘和冒号同时对齐——中文简历里「电 话 / 个人主页」那种排法。 */
+.contact { margin-top:11px; font-size:9.3pt;
+           display:grid; grid-template-columns:auto auto 1fr auto auto 1fr;
+           row-gap:7px; column-gap:0; align-items:baseline; }
+.contact .lb, .contact .lb2 { font-weight:700; display:inline-block;
+           text-align:justify; text-align-last:justify; }
+.contact .lb  { width:4.6em; }      /* 电话 / 个人主页 */
+.contact .lb2 { width:3.32em; }   /* 刚好等于 GitHub 的自然宽度 */
+.contact .lb2.en { text-align-last:left; }   /* 拉丁字母不做两端对齐，否则字距被撑开 */      /* 邮箱 / GitHub */
+.contact .cl { font-weight:700; padding-right:2px; }
+.contact .vl { padding-right:20px; }
+
+/* 区块标题：仿 LaTeX titlesec 的粗体 + 下划线 */
+h2 { font:700 11pt/1.25 "Helvetica Neue", "PingFang SC", sans-serif; letter-spacing:1px;
+     margin:6px 0 2px; padding-bottom:1px; border-bottom:1px solid #000;
+     break-after:avoid; }
+h2 .sub { font:400 9.3pt "Helvetica Neue", "PingFang SC", sans-serif; color:#444; margin-left:6px; letter-spacing:0; }
+
+/* 条目：仿 \datedsubsection —— 左标题 + 右对齐日期 */
+.entry { display:flex; align-items:baseline; gap:10px; margin:3px 0 0; break-after:avoid; }
+.entry .t { font-weight:700; font-size:10.4pt; }
+.entry .t em { font-weight:700; }
+.entry .d { margin-left:auto; flex:0 0 auto; font-size:9.2pt; white-space:nowrap;
+            font-family:"Helvetica Neue", Helvetica, "PingFang SC", sans-serif; }
+.entry .d a { text-decoration:none; border-bottom:1px solid #999; }
+
+/* 仿 \Content 的 itemize */
+ul { list-style:none; margin:2px 0 0; }
+ul li { position:relative; padding-left:13px; margin-bottom:0; }
+ul li::before { content:"•"; position:absolute; left:2px; }
+
+/* 仿 \SimpleEntry 的整行说明 */
+p.line { margin:2px 0; }
+p.note { margin:3px 0 0; }
+dl { display:grid; grid-template-columns:auto 1fr; gap:1px 8px; margin-top:3px; }
+dt { font-weight:700; white-space:nowrap; }
+
+@media print { body { padding:0; } }
+
+/* 抬头下的一行亮点：居中加粗 */
+p.line.highlight { text-align:center; font-weight:700; margin:6px 0 2px;
+                   letter-spacing:.3px; }
+
+/* 长网址允许断行，否则整串换行会在上一行末尾留大片空白 */
+p.line, p.note { overflow-wrap:anywhere; }
+
+/* ===== 自适应比例 =====
+   --ks 等比缩放三级间距，--kf 等比缩放全部字号。
+   基准值就是「排版标准.md」里的标准态：行间隙 5.9 : 条目 11 : 大块 17。
+   两个变量由 head 里的 autofit 脚本二分求解，内容增删后自动把版面填回一页。 */
+:root { --ks:1; --kf:1; }
+
+body                 { font-size: calc(9.8pt  * var(--kf)); }
+h1                   { font-size: calc(23pt   * var(--kf)); }
+.title               { font-size: calc(11.5pt * var(--kf)); }
+h2                   { font-size: calc(11pt   * var(--kf)); }
+.entry .t            { font-size: calc(10.4pt * var(--kf)); }
+.entry .d            { font-size: calc(9.2pt  * var(--kf)); }
+.contact             { font-size: calc(9.3pt  * var(--kf)); }
+h2 .sub, .entry .sub { font-size: calc(9.3pt  * var(--kf)); }
+
+/* 三级间距：大块 / 中块 / 小块共用一个 --ks，层级比例恒定不走样 */
+h2      { margin: calc(17px  * var(--ks)) 0 calc(4px * var(--ks)); }
+.entry  { margin: calc(11px  * var(--ks)) 0 0; }
+ul      { margin: calc(2px   * var(--ks)) 0 0; }
+ul li   { margin-bottom: calc(1.5px * var(--ks)); }
+p.note  { margin: calc(5px   * var(--ks)) 0 0; }
+header  { margin-bottom: calc(7px * var(--ks)); }
+
+/* 约束：正文里的链接一律右对齐，停在本条末行右端，不另起一行 */
+li a.ilink, p.note a.ilink { float:right; margin-left:10px; }
+li .rt2 { float:right; margin-left:12px; white-space:nowrap; }
+li .rt2 a.ilink { float:none; margin-left:0; }
+
+</style>
+<script id="autofit">
+/* 自适应填页：内容增删后，等比缩放三级间距(--ks)与字号(--kf)，把版面填回正好一页。
+   让步顺序遵循「排版标准.md」——先动间距，间距到极限才动字号。 */
+(function(){
+  var R = document.documentElement;
+  var AVAIL = (297-20)*96/25.4;     // A4 高 − 上下页边距，px @96dpi
+  var SAFE  = 4;                    // 底部至少留 4px
+  var KS = [0.80, 2.20];            // 间距比例常规区间：0.80 是感知下限
+                                    // （再低条目间隙就小于行间隙，整页"融为一体"）
+  var KS_HARD = 0.45;               // 字号也让到头之后，才允许跌破软下限
+  var KF = [0.90, 1.08];            // 字号比例上下限
+  var LOOSE = 30;                   // 余量大于这个才考虑放大字号
+
+  function bottom(){
+    var e = document.body.getElementsByTagName('*'), m = 0;
+    for (var i=0; i<e.length; i++){
+      var t = e[i].tagName; if (t==='SCRIPT' || t==='STYLE') continue;
+      var b = e[i].getBoundingClientRect().bottom; if (b>m) m = b;
+    }
+    return m;
+  }
+  function set(ks, kf){
+    R.style.setProperty('--ks', ks);
+    if (kf != null) R.style.setProperty('--kf', kf);
+  }
+  function slackAt(ks, kf){ set(ks, kf); return AVAIL - bottom(); }
+
+  // 二分：在给定字号比例下，找还放得下的最大间距比例
+  function bestKs(kf, floor){
+    var lo = (floor==null ? KS[0] : floor), hi = KS[1];
+    if (slackAt(lo, kf) < SAFE) return null;      // 最紧也放不下
+    if (slackAt(hi, kf) >= SAFE) return hi;       // 最松也还有富余
+    for (var i=0; i<16; i++){
+      var mid = (lo+hi)/2;
+      if (slackAt(mid, kf) >= SAFE) lo = mid; else hi = mid;
+    }
+    return lo;
+  }
+
+  function fit(){
+    var kf = 1, ks = bestKs(1), f;
+    if (ks === null){                              // 内容太多：字号逐档往下让
+      for (f = 0.99; f >= KF[0]-1e-9; f -= 0.01){
+        f = +f.toFixed(2); ks = bestKs(f);
+        if (ks !== null){ kf = f; break; }
+      }
+      if (ks === null){                            // 字号也让到头，最后才跌破间距软下限
+        kf = KF[0]; ks = bestKs(kf, KS_HARD);
+        if (ks === null){ set(KS_HARD, KF[0]); return {ks:KS_HARD, kf:KF[0], slack:+(AVAIL-bottom()).toFixed(1), ok:false}; }
+      }
+    } else if (ks >= KS[1]-1e-6 && slackAt(KS[1], 1) > LOOSE){   // 内容太少：字号逐档往上放
+      for (f = 1.01; f <= KF[1]+1e-9; f += 0.01){
+        f = +f.toFixed(2);
+        var t = bestKs(f); if (t === null) break;
+        kf = f; ks = t;
+        if (slackAt(ks, kf) <= LOOSE) break;
+      }
+    }
+    set(ks, kf);
+    var r = {ks:+ks.toFixed(3), kf:kf, slack:+(AVAIL-bottom()).toFixed(1), ok:true};
+    R.setAttribute('data-fit', r.ks+' / '+r.kf+'  余量'+r.slack+'px');
+    return r;
+  }
+
+  window.fit = fit;                                 // 控制台里手动跑：fit()
+  function run(){ try { fit(); } catch(e){} }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+  window.addEventListener('load', run);
+  var timer;
+  document.addEventListener('input', function(){ clearTimeout(timer); timer = setTimeout(run, 1200); }, true);
+})();
+</script>
+</head>
+<body>
+<header>
+  <div class="hd-l">
+  <h1>孙悟空</h1><span class="title">斗战胜佛</span>
+  <div class="contact">
+    <span class="lb">籍贯</span><span class="cl">：</span><span class="vl">东胜神洲 傲来国</span>
+    <span class="lb2 en">道号</span><span class="cl">：</span><span class="vl">孙行者 · 齐天大圣</span>
+    <span class="lb">现居</span><span class="cl">：</span><span class="vl">花果山 水帘洞</span>
+    <span class="lb2">师承</span><span class="cl">：</span><span class="vl">菩提祖师 · 唐三藏</span>
+  </div>
+  </div>
+</header>
+
+<p class="line highlight">七十二变　·　筋斗云十万八千里　·　取经十四年八十一难　·　真经 5048 卷</p>
+
+<h2>核心能力</h2>
+
+<div class="entry"><span class="t">七十二般变化</span><span class="d">灵台方寸山所授</span></div>
+<ul>
+  <li>可变飞禽走兽、器物草木，也可变人形。破绽在尾巴，变庙宇时旗杆无处安放，曾被二郎神识破</li>
+</ul>
+
+<div class="entry"><span class="t">筋斗云</span><span class="d">单次位移 108000 里</span></div>
+<ul>
+  <li>一个筋斗十万八千里，与取经全程路途等长。只解决位移，不解决劫难，所以八十一难仍要一步步走</li>
+</ul>
+
+<div class="entry"><span class="t">如意金箍棒</span><span class="d">13500 斤</span></div>
+<ul>
+  <li>原为东海龙宫定海神针铁，可大可小，最小如绣花针藏于耳内。取自龙宫，非采购</li>
+</ul>
+
+<div class="entry"><span class="t">火眼金睛</span><span class="d">太上老君 八卦炉</span></div>
+<ul>
+  <li>被困八卦炉七七四十九日，烟熏而成。能识妖怪本相，白骨精三次变化均被识破——但当时没能说服团队</li>
+</ul>
+
+<h2>工作经历</h2>
+
+<div class="entry"><span class="t">西天取经项目 大徒弟</span><span class="d">贞观十三年 – 二十七年 · 长安至灵山</span></div>
+<ul>
+  <li>全程十四年，历九九八十一难，取回真经 5048 卷，项目结项后受封斗战胜佛</li>
+  <li>负责开路与降妖，独立处理白骨精、黄风怪、红孩儿等；三借芭蕉扇过火焰山，前两次失败，第三次联合天兵才成</li>
+  <li>项目中期因团队对妖怪识别结果不认可，被两次解除职务，后经沙僧与观音协调复岗</li>
+</ul>
+
+<div class="entry"><span class="t">天庭 齐天大圣</span><span class="d">受封 · 管蟠桃园</span></div>
+<ul>
+  <li>有官无禄的虚职，实际职责是看管蟠桃园 3600 株。因未获蟠桃会邀请，搅乱宴席，与十万天兵交战</li>
+  <li>后被压于五行山下五百年，直至取经项目启动方获释</li>
+</ul>
+
+<div class="entry"><span class="t">天庭 弼马温</span><span class="d">首份天庭职务</span></div>
+<ul>
+  <li>掌御马监，将天马养得肉膘肥满。得知系未入流品级后离职——这是全篇第一次因职级问题主动离职</li>
+</ul>
+
+<div class="entry"><span class="t">花果山 美猴王</span><span class="d">石卵化生 – 至今</span></div>
+<ul>
+  <li>率众猴穿瀑布寻得水帘洞，以居住地换来王位；后为求长生远渡两界，师从菩提祖师</li>
+  <li>大闹地府，销去猴属生死簿名录，为花果山群猴解决寿命问题</li>
+</ul>
+
+<h2>教育与其他</h2>
+
+<div class="entry"><span class="t">灵台方寸山 斜月三星洞</span><span class="d">菩提祖师门下</span></div>
+<ul>
+  <li><strong>所学：</strong>长生之道、七十二般变化、筋斗云。因在同门前卖弄变化被逐出师门，师父嘱不得提及师承</li>
+  <li><strong>坐骑与装备：</strong>无坐骑；金箍棒、凤翅紫金冠、锁子黄金甲、藕丝步云履，后三件取自龙宫</li>
+</ul>
+</body>
+</html>

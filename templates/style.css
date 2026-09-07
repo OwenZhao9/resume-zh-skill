@@ -1,7 +1,7 @@
-@page { size: A4; margin: 10mm 11mm 8mm; }
+@page { size: A4; margin: 10mm 11mm 10mm; }
 * { box-sizing:border-box; margin:0; padding:0; }
 body {
-  font: 9.4pt/1.40 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
+  font: 9.8pt/1.45 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
   color:#000; background:#fff; max-width:188mm; margin:0 auto;
   -webkit-font-smoothing: antialiased;
 }
@@ -15,16 +15,17 @@ em { font-style:italic; }
 header { margin-bottom:7px; display:flex; align-items:flex-start; gap:14px; }
 .hd-l { flex:1 1 auto; min-width:0; }
 /* 证件照：无边框、无圆角、无滤镜，保持原色 */
-.photo { flex:0 0 auto; width:17mm; height:auto; display:block; margin-top:1px; }
+.photo { flex:0 0 auto; width:18.9mm; height:26.2mm; display:block; align-self:flex-end;
+         object-fit:cover; object-position:center bottom; }  /* 裁掉照片顶部 32 行纯白 */
 h1 { font:600 23pt/1.1 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
      letter-spacing:2px; display:inline-block; }
 .title { font:500 11.5pt/1 "Helvetica Neue", "PingFang SC", sans-serif; margin-left:14px; color:#333; }
 /* 六列网格：标签 | 冒号 | 值，两组。
    标签用两端对齐（text-align-last:justify）撑满固定宽度，
    于是左边缘和冒号同时对齐——中文简历里「电 话 / 个人主页」那种排法。 */
-.contact { margin-top:6px; font-size:9.3pt;
+.contact { margin-top:11px; font-size:9.3pt;
            display:grid; grid-template-columns:auto auto 1fr auto auto 1fr;
-           row-gap:2px; column-gap:0; align-items:baseline; }
+           row-gap:7px; column-gap:0; align-items:baseline; }
 .contact .lb, .contact .lb2 { font-weight:700; display:inline-block;
            text-align:justify; text-align-last:justify; }
 .contact .lb  { width:4.6em; }      /* 电话 / 个人主页 */
@@ -34,14 +35,14 @@ h1 { font:600 23pt/1.1 "Helvetica Neue", Helvetica, "PingFang SC", sans-serif;
 .contact .vl { padding-right:20px; }
 
 /* 区块标题：仿 LaTeX titlesec 的粗体 + 下划线 */
-h2 { font:700 11.5pt/1.25 "Helvetica Neue", "PingFang SC", sans-serif; letter-spacing:1px;
+h2 { font:700 11pt/1.25 "Helvetica Neue", "PingFang SC", sans-serif; letter-spacing:1px;
      margin:6px 0 2px; padding-bottom:1px; border-bottom:1px solid #000;
      break-after:avoid; }
 h2 .sub { font:400 9.3pt "Helvetica Neue", "PingFang SC", sans-serif; color:#444; margin-left:6px; letter-spacing:0; }
 
 /* 条目：仿 \datedsubsection —— 左标题 + 右对齐日期 */
 .entry { display:flex; align-items:baseline; gap:10px; margin:3px 0 0; break-after:avoid; }
-.entry .t { font-weight:700; font-size:10.1pt; }
+.entry .t { font-weight:700; font-size:10.4pt; }
 .entry .t em { font-weight:700; }
 .entry .d { margin-left:auto; flex:0 0 auto; font-size:9.2pt; white-space:nowrap;
             font-family:"Helvetica Neue", Helvetica, "PingFang SC", sans-serif; }
@@ -67,12 +68,30 @@ p.line.highlight { text-align:center; font-weight:700; margin:6px 0 2px;
 /* 长网址允许断行，否则整串换行会在上一行末尾留大片空白 */
 p.line, p.note { overflow-wrap:anywhere; }
 
-/* ===== 三级间距 ===== */
-/* 大项：区块标题（独立产品 / 工作经历 / 教育与其他） */
-h2 { margin:11px 0 3px; }
-/* 中项：每条经历 / 每个产品 */
-.entry { margin:6px 0 0; }
-/* 内部：条目下的 bullet */
-ul { margin:2px 0 0; }
-ul li { margin-bottom:1.5px; }
-p.note { margin:5px 0 0; }
+/* ===== 自适应比例 =====
+   --ks 等比缩放三级间距，--kf 等比缩放全部字号。
+   基准值就是「排版标准.md」里的标准态：行间隙 5.9 : 条目 11 : 大块 17。
+   两个变量由 head 里的 autofit 脚本二分求解，内容增删后自动把版面填回一页。 */
+:root { --ks:1; --kf:1; }
+
+body                 { font-size: calc(9.8pt  * var(--kf)); }
+h1                   { font-size: calc(23pt   * var(--kf)); }
+.title               { font-size: calc(11.5pt * var(--kf)); }
+h2                   { font-size: calc(11pt   * var(--kf)); }
+.entry .t            { font-size: calc(10.4pt * var(--kf)); }
+.entry .d            { font-size: calc(9.2pt  * var(--kf)); }
+.contact             { font-size: calc(9.3pt  * var(--kf)); }
+h2 .sub, .entry .sub { font-size: calc(9.3pt  * var(--kf)); }
+
+/* 三级间距：大块 / 中块 / 小块共用一个 --ks，层级比例恒定不走样 */
+h2      { margin: calc(17px  * var(--ks)) 0 calc(4px * var(--ks)); }
+.entry  { margin: calc(11px  * var(--ks)) 0 0; }
+ul      { margin: calc(2px   * var(--ks)) 0 0; }
+ul li   { margin-bottom: calc(1.5px * var(--ks)); }
+p.note  { margin: calc(5px   * var(--ks)) 0 0; }
+header  { margin-bottom: calc(7px * var(--ks)); }
+
+/* 约束：正文里的链接一律右对齐，停在本条末行右端，不另起一行 */
+li a.ilink, p.note a.ilink { float:right; margin-left:10px; }
+li .rt2 { float:right; margin-left:12px; white-space:nowrap; }
+li .rt2 a.ilink { float:none; margin-left:0; }

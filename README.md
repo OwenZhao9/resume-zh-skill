@@ -14,6 +14,12 @@
 
 配套还有两份东西：`references/voice.md` 是一套「去 AI 味」的中文文案规则，`references/workflow.md` 是人和 agent 同时改一份文件不互相覆盖的流程。
 
+## 长什么样
+
+拿《西游记》的公开设定排了一份样例，可以直接打开改着玩：[`demo/sun-wukong.html`](demo/sun-wukong.html) · [PDF](demo/sun-wukong.pdf)
+
+![孙悟空简历样例](demo/preview.png)
+
 ## 安装
 
 ```bash
